@@ -1,0 +1,24 @@
+.collection-page h2 {
+    font-size: 30px;
+    text-align: center;
+}
+
+.collection-page ul {
+    list-style: none;
+    margin-right: 29px;
+}
+
+#add-artist-button {
+    display: block;
+    margin: auto;
+}
+
+@media all and (min-width: 800px) {
+    .collection-page {
+        margin: 20px 100px;
+    }
+
+    .collection-page h2 {
+        font-size: 40px;
+    }
+}

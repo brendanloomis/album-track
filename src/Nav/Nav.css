@@ -1,0 +1,26 @@
+.nav {
+    text-align: center;
+    background-color: #6a909e;
+    padding-bottom: 5px;
+}
+
+.nav-item{
+    text-decoration: none;
+    color: #122630;
+    margin-left: 8px;
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+@media all and (min-width: 800px) {
+    .nav {
+        text-align: right;
+        padding-right: 10px;
+    }
+
+    .nav-item {
+        margin-left: 10px;
+        margin-right: 8px;
+        font-size: 20px;
+    }
+}

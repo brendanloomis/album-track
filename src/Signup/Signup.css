@@ -1,0 +1,55 @@
+.signup {
+    background-color: #3E606F;
+    display: block;
+    margin: auto;
+    width: 80%;
+    padding: 10%;
+    margin-top: 50px;
+    text-align: center;
+    color: #0e1a20;
+}
+
+.signup h2 {
+    margin-top: 0px;
+    font-size: 35px;
+}
+
+.signup-form label {
+    margin: 5px;
+}
+
+.signup-form input {
+    margin: 5px;
+}
+
+.signup-buttons {
+    margin: 10px;
+}
+
+.login-link {
+    margin: 10px;
+}
+
+@media all and (min-width: 800px) {
+    .signup {
+        width: 500px;
+        padding: 50px;
+        margin-top: 50px;
+    }
+
+    #password {
+        margin-left: 60px;
+    }
+
+    #username {
+        margin-left: 54px;
+    }
+
+    #last-name {
+        margin-left: 51px;
+    }
+
+    #first-name {
+        margin-left: 50px;
+    }
+}

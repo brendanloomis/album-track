@@ -1,0 +1,12 @@
+.song {
+    background-color: #93b3c0;
+    margin-right: 16px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+@media all and (min-width: 800px) {
+    .song-buttons {
+        text-align: right;
+    }
+}

@@ -1,0 +1,20 @@
+.artist-page h2 {
+    font-size: 30px;
+    text-align: center;
+}
+
+.artist-page ul {
+    list-style-type: none;
+    margin-right: 29px;
+}
+
+.artist-page-buttons {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+@media all and (min-width: 800px) {
+    .artist-page h2 {
+        font-size: 40px;
+    }
+}

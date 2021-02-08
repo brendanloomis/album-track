@@ -1,0 +1,25 @@
+.artist {
+    background-color: #3E606F;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.artist h3 {
+    font-size: 27px;
+}
+
+.artist-link {
+    text-decoration: none;
+    color: #0e1a20;
+}
+
+#edit-artist {
+    width: 56px;
+}
+
+@media all and (min-width: 800px) {
+    .artist h3 {
+        font-size: 32px;
+    }
+}

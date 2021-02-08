@@ -1,0 +1,39 @@
+.landing {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.landing h2 {
+    font-size: 25px;
+    text-align: center;
+}
+
+.landing section {
+    padding: 10px;
+}
+
+.landing p {
+    font-size: 20px;
+}
+
+@media all and (min-width: 800px) {
+    .landing {
+        margin: 100px 50px 50px 50px;
+        flex-direction: row;
+    }
+
+    .landing h2 {
+        font-size: 30px;
+    }
+
+    .landing section {
+        padding: 10px;
+        flex: 1;
+    }
+
+    .landing p {
+        font-size: 27px;
+    }
+}
