@@ -1,0 +1,15 @@
+.album-form label{
+    margin: 5px;
+}
+
+.album-form input {
+    margin-top: 5px;
+}
+
+.album-form-buttons {
+    margin: 10px;
+}
+
+.album-form div {
+    margin: 10px;
+}

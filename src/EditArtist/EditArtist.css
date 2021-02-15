@@ -1,0 +1,23 @@
+.edit-artist {
+    background-color: #3E606F;
+    display: block;
+    margin: auto;
+    width: 80%;
+    padding: 10%;
+    margin-top: 50px;
+    text-align: center;
+    color: #0e1a20;
+}
+
+.edit-artist h2 {
+    margin-top: 0px;
+    font-size: 35px;
+}
+
+@media all and (min-width: 800px) {
+    .edit-artist {
+        width: 500px;
+        padding: 50px;
+        margin-top: 50px;
+    }
+}

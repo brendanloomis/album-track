@@ -1,0 +1,15 @@
+.artist-form label{
+    margin: 5px;
+}
+
+.artist-form input {
+    margin-top: 5px;
+}
+
+.artist-form-buttons {
+    margin: 10px;
+}
+
+.artist-form div {
+    margin: 10px;
+}

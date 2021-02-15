@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Landing.css';
 
 class Landing extends React.Component {
@@ -15,7 +16,7 @@ class Landing extends React.Component {
                 </section>
                 <section className='get-started'>
                     <h2>Get started today!</h2>
-                    <p>Create a new account or use the demo account to get started with Album Track!</p>
+                    <p>Create a <Link to='/signup'>new account</Link> or use the demo account to get started with Album Track!</p>
                 </section>
             </div>
         );

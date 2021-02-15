@@ -1,0 +1,15 @@
+.song-form label{
+    margin: 5px;
+}
+
+.song-form input {
+    margin-top: 5px;
+}
+
+.song-form-buttons {
+    margin: 10px;
+}
+
+.song-form div {
+    margin: 10px;
+}

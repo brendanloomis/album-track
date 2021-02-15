@@ -1,12 +1,42 @@
 import React from 'react';
 import Song from '../Song/Song';
-import { getSongsForAlbum } from '../helper-functions';
+import { getSongsForAlbum, findUsersAlbumsId } from '../helper-functions';
+import AlbumContext from '../AlbumContext';
+import { Link } from 'react-router-dom';
+import config from '../config';
 import './Album.css';
 
 class Album extends React.Component {
+    static contextType = AlbumContext;
+
+    handleDelete = (album_id) => {
+        const user_id = this.context.userInfo.user_id;
+        const usersalbums_id = findUsersAlbumsId(this.context.albumsForUser, album_id);
+        fetch(`${config.API_ENDPOINT}/usersalbums/${usersalbums_id}`, {
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `bearer ${config.API_KEY}`
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(error => {
+                        throw error;
+                    });
+                }
+            })
+            .then(() => {
+                this.context.deleteAlbum(album_id);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
     render() {
-        const songsForAlbum = getSongsForAlbum(this.props.songs, this.props.id);
-        const songs = songsForAlbum.map(song => (
+        const songsForAlbum = getSongsForAlbum(this.context.songs, this.props.id);
+        const songs = songsForAlbum.sort((a, b) => a.song_id - b.song_id).map(song => (
             <li key={song.song_id}>
                 <Song
                     id={song.song_id}
@@ -19,9 +49,17 @@ class Album extends React.Component {
                 <h3>{this.props.name}</h3>
                 <p>Genre: {this.props.genre}</p>
                 <div className='album-buttons'>
-                    <button>Edit</button>
-                    <button>Delete</button>
-                    <button>Add Song</button>
+                    <Link to={`/edit-album/${this.props.id}`}>
+                        <button>Edit</button>
+                    </Link>
+                    <button
+                        onClick={() => this.handleDelete(this.props.id)}
+                    >
+                        Delete
+                    </button>
+                    <Link to={`/add-song/${this.props.id}`}>
+                        <button>Add Song</button>
+                    </Link>
                 </div>
                 <h4>Tracklist</h4>
                 <ul>{songs}</ul>
