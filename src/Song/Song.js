@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AlbumContext from '../AlbumContext';
 import config from '../config';
+import PropTypes from 'prop-types';
 import './Song.css';
 
 class Song extends React.Component {
@@ -38,6 +39,7 @@ class Song extends React.Component {
                     <Link to={`/edit-song/${this.props.id}`}>
                         <button>Edit</button>
                     </Link>
+                    {' '}
                     <button 
                         onClick={() => this.handleDelete(this.props.id)}
                     >
@@ -47,6 +49,11 @@ class Song extends React.Component {
             </div>
         );
     }
+};
+
+Song.propTypes = {
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired
 };
 
 export default Song;

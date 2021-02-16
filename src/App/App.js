@@ -16,6 +16,7 @@ import AddAlbum from '../AddAlbum/AddAlbum';
 import EditAlbum from '../EditAlbum/EditAlbum';
 import AddSong from '../AddSong/AddSong';
 import EditSong from '../EditSong/EditSong';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
 class App extends React.Component{
   state = {
@@ -95,61 +96,63 @@ class App extends React.Component{
     const { artists, albums, songs } = store;
     return (
       <>
-        <Route 
-          exact 
-          path='/'
-          component={Landing}
-        />
-        <Route
-          exact
-          path='/collection'
-          component={CollectionPage}
-        />
-        <Route
-          exact
-          path='/collection/:artistId'
-          component={ArtistPage}
-        />
-        <Route
-          exact
-          path='/login'
-          component={Login}
-        />
-        <Route
-          exact
-          path='/signup'
-          component={Signup}
-        />
-        <Route 
-          exact
-          path='/add-artist'
-          component={AddArtist}
-        />
-        <Route
-          exact
-          path='/edit-artist/:artist_id'
-          component={EditArtist}
-        />
-        <Route 
-          exact
-          path='/add-album/:artist'
-          component={AddAlbum}
-        />
-        <Route 
-          exact
-          path='/edit-album/:album_id'
-          component={EditAlbum}
-        /> 
-        <Route
-          exact
-          path='/add-song/:album'
-          component={AddSong}
-        />
-        <Route
-          exact
-          path='/edit-song/:song_id'
-          component={EditSong}
-        />
+        <ErrorBoundary>
+          <Route 
+            exact 
+            path='/'
+            component={Landing}
+          />
+          <Route
+            exact
+            path='/collection'
+            component={CollectionPage}
+          />
+          <Route
+            exact
+            path='/collection/:artistId'
+            component={ArtistPage}
+          />
+          <Route
+            exact
+            path='/login'
+            component={Login}
+          />
+          <Route
+            exact
+            path='/signup'
+            component={Signup}
+          />
+          <Route 
+            exact
+            path='/add-artist'
+            component={AddArtist}
+          />
+          <Route
+            exact
+            path='/edit-artist/:artist_id'
+            component={EditArtist}
+          />
+          <Route 
+            exact
+            path='/add-album/:artist'
+            component={AddAlbum}
+          />
+          <Route 
+            exact
+            path='/edit-album/:album_id'
+            component={EditAlbum}
+          /> 
+          <Route
+            exact
+            path='/add-song/:album'
+            component={AddSong}
+          />
+          <Route
+            exact
+            path='/edit-song/:song_id'
+            component={EditSong}
+          />
+        </ErrorBoundary>
         </>
     )
   }
@@ -295,10 +298,15 @@ class App extends React.Component{
           <header>
             <h1>Album Track</h1>
           </header>
-          <Nav />
+          <ErrorBoundary>
+            <Nav />
+          </ErrorBoundary>
           <main className='main'>
             {this.renderRoutes()}
           </main>
+          <footer>
+            <p>© Brendan Loomis</p>
+          </footer>
         </div>
       </AlbumContext.Provider>
     );

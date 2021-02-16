@@ -1,12 +1,12 @@
 .edit-album {
-    background-color: #3E606F;
+    background-color: #DB4D60;
     display: block;
     margin: auto;
     width: 80%;
     padding: 10%;
     margin-top: 50px;
     text-align: center;
-    color: #0e1a20;
+    color: #060f13;
 }
 
 .edit-album h2 {
@@ -14,10 +14,18 @@
     font-size: 35px;
 }
 
+.edit-album label {
+    display: block;
+}
+
 @media all and (min-width: 800px) {
     .edit-album {
         width: 500px;
         padding: 50px;
         margin-top: 50px;
+    }
+
+    .edit-album label {
+        display: inline;
     }
 }

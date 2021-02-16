@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class ValidationError extends React.Component {
     render() {
@@ -10,5 +11,9 @@ class ValidationError extends React.Component {
         return <></>;
     }
 }
+
+ValidationError.propTypes = {
+    message: PropTypes.string
+};
 
 export default ValidationError;

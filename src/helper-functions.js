@@ -16,17 +16,6 @@ export const getSongsForAlbum = (songs, albumId) => (
         : songs.filter(song => song.album === albumId)
 );
 
-/*export const getArtistsForUser = (artists, ownedAlbums) => {
-    const artistIds = [];
-    for (let i = 0; i < ownedAlbums.length; i++) {
-        if (!artistIds.includes(ownedAlbums[i].artist)) {
-            artistIds.push(ownedAlbums[i].artist);
-        }
-    }
-    const artistsForUser = artists.filter(a => artistIds.includes(a.artist_id));
-    return artistsForUser;
-};*/
-
 export const getOwnedAlbums = (albums, userAlbums) => {
     const albumIds = [];
     for (let i = 0; i < userAlbums.length; i++) {

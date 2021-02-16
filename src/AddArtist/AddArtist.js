@@ -3,6 +3,7 @@ import ArtistForm from '../ArtistForm/ArtistForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
 import { findArtistByName } from '../helper-functions';
+import PropTypes from 'prop-types';
 import './AddArtist.css';
 
 class AddArtist extends React.Component {
@@ -93,7 +94,12 @@ class AddArtist extends React.Component {
                 return res.json();
             })
             .then(data => {
-                this.context.addArtistForUser(data);
+                const artistToAdd = {
+                    artist_id: data.artist,
+                    artist_name: artist.artist_name,
+                    usersartists_id: data.usersartists_id
+                };
+                this.context.addArtistForUser(artistToAdd);
                 this.props.history.push(`/collection/${data.artist}`);
             })
             .catch(error => {
@@ -120,5 +126,11 @@ class AddArtist extends React.Component {
         );
     }
 }
+
+AddArtist.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    })
+};
 
 export default AddArtist;

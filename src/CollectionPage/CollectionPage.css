@@ -11,11 +11,22 @@
 #add-artist-button {
     display: block;
     margin: auto;
+    width: 200px;
+    height: 60px;
+    font-size: 18px;
+}
+
+.collection-page {
+    margin-bottom: 70px;
+}
+
+.add-artist-link {
+    text-decoration: none;
 }
 
 @media all and (min-width: 800px) {
     .collection-page {
-        margin: 20px 100px;
+        margin: 20px 100px 70px 100px;
     }
 
     .collection-page h2 {

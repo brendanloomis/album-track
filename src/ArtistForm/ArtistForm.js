@@ -1,5 +1,6 @@
 import React from 'react';
 import ValidationError from '../ValidationError';
+import PropTypes from 'prop-types';
 import './ArtistForm.css';
 
 class ArtistForm extends React.Component {
@@ -54,5 +55,15 @@ class ArtistForm extends React.Component {
         );
     }
 }
+
+ArtistForm.propTypes = {
+    artist: PropTypes.shape({
+        artist_id: PropTypes.number,
+        artist_name: PropTypes.string
+    }),
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    error: PropTypes.object
+};
 
 export default ArtistForm;

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
 import ValidationError from '../ValidationError';
-import { getArtistsForUser } from '../'
+import PropTypes from 'prop-types';
 import './Login.css';
 
 class Login extends React.Component {
@@ -86,13 +86,14 @@ class Login extends React.Component {
                     {this.state.error && <ValidationError message='Invalid username or password' />}
                     <div className='login-buttons'>
                         <button type='submit'>Log In</button>
+                        {' '}
                         <Link to='/'>
                             <button>Cancel</button>
                         </Link>
                     </div>
                 </form>
                 <div className='demo'>
-                    <p>For demo account:</p> 
+                    <p>For demo account (case sensitive):</p> 
                     <p>username: demo</p>
                     <p>password: password123</p>
                 </div>
@@ -105,6 +106,12 @@ class Login extends React.Component {
             </div>
         );
     }
+};
+
+Login.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    })
 };
 
 export default Login;

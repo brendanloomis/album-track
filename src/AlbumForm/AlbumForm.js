@@ -1,6 +1,7 @@
 import React from 'react';
 import AlbumContext from '../AlbumContext';
 import ValidationError from '../ValidationError';
+import PropTypes from 'prop-types';
 import './AlbumForm.css';
 
 class AlbumForm extends React.Component {
@@ -99,5 +100,18 @@ class AlbumForm extends React.Component {
         );
     }
 }
+
+AlbumForm.propTypes = {
+    album: PropTypes.shape({
+        album_id: PropTypes.number,
+        album_name: PropTypes.string,
+        genre: PropTypes.string,
+        artist: PropTypes.number
+    }),
+    artist: PropTypes.string,
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    error: PropTypes.object
+};
 
 export default AlbumForm;

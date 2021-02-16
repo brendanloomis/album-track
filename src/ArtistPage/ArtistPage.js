@@ -3,6 +3,7 @@ import Album from '../Album/Album';
 import { findArtist, getAlbumsForArtist, getOwnedAlbums } from '../helper-functions';
 import AlbumContext from '../AlbumContext';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './ArtistPage.css';
 
 class ArtistPage extends React.Component {
@@ -34,7 +35,7 @@ class ArtistPage extends React.Component {
                 </div>
                 <ul>{albums}</ul>
                 <div className='artist-page-buttons'>
-                    <Link to='/add-album'>
+                    <Link to={`/add-album/${artistId}`}>
                         <button>Add Album</button>
                     </Link>
                     {' '}
@@ -45,6 +46,13 @@ class ArtistPage extends React.Component {
     }
 };
 
-
+ArtistPage.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    }),
+    match: PropTypes.shape({
+        params: PropTypes.object.isRequired
+    })
+};
 
 export default ArtistPage;

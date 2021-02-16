@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import AlbumContext from '../AlbumContext';
 import config from '../config';
 import { findUsersArtistsId } from '../helper-functions';
+import PropTypes from 'prop-types';
 import './Artist.css';
 
 class Artist extends React.Component {
@@ -56,6 +57,11 @@ class Artist extends React.Component {
             </div>
         );
     }
+};
+
+Artist.propTypes = {
+    artist_id: PropTypes.number.isRequired,
+    artist_name: PropTypes.string.isRequired
 };
 
 export default Artist;

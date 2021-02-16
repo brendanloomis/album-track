@@ -4,6 +4,7 @@ import { getSongsForAlbum, findUsersAlbumsId } from '../helper-functions';
 import AlbumContext from '../AlbumContext';
 import { Link } from 'react-router-dom';
 import config from '../config';
+import PropTypes from 'prop-types';
 import './Album.css';
 
 class Album extends React.Component {
@@ -52,11 +53,13 @@ class Album extends React.Component {
                     <Link to={`/edit-album/${this.props.id}`}>
                         <button>Edit</button>
                     </Link>
+                    {' '}
                     <button
                         onClick={() => this.handleDelete(this.props.id)}
                     >
                         Delete
                     </button>
+                    {' '}
                     <Link to={`/add-song/${this.props.id}`}>
                         <button>Add Song</button>
                     </Link>
@@ -66,6 +69,12 @@ class Album extends React.Component {
             </div>
         );
     }
+};
+
+Album.propTypes = {
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    genre: PropTypes.string.isRequired
 };
 
 export default Album;

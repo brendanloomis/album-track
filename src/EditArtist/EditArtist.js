@@ -2,6 +2,7 @@ import React from 'react';
 import ArtistForm from '../ArtistForm/ArtistForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
+import PropTypes from 'prop-types';
 import './EditArtist.css';
 
 class EditArtist extends React.Component {
@@ -103,5 +104,14 @@ class EditArtist extends React.Component {
         );
     }
 }
+
+EditArtist.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    }),
+    match: PropTypes.shape({
+        params: PropTypes.object.isRequired
+    })
+};
 
 export default EditArtist;

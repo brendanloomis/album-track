@@ -3,6 +3,7 @@ import SongForm from '../SongForm/SongForm';
 import AlbumContext from '../AlbumContext';
 import config from '../config';
 import { findAlbum, findArtist } from '../helper-functions';
+import PropTypes from 'prop-types';
 import './AddSong.css';
 
 class AddSong extends React.Component {
@@ -62,5 +63,15 @@ class AddSong extends React.Component {
         )
     }
 }
+
+AddSong.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+        goBack: PropTypes.func.isRequired
+    }),
+    match: PropTypes.shape({
+        params: PropTypes.object.isRequired
+    })
+};
 
 export default AddSong;

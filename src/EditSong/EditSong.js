@@ -3,6 +3,7 @@ import SongForm from '../SongForm/SongForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
 import { findAlbum, findArtist } from '../helper-functions';
+import PropTypes from 'prop-types';
 import './EditSong.css';
 
 class EditSong extends React.Component {
@@ -106,5 +107,15 @@ class EditSong extends React.Component {
         );
     }
 }
+
+EditSong.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+        goBack: PropTypes.func.isRequired
+    }),
+    match: PropTypes.shape({
+        params: PropTypes.object.isRequired
+    })
+};
 
 export default EditSong;

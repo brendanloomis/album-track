@@ -1,5 +1,5 @@
 .artist {
-    background-color: #3E606F;
+    background-color: #DB4D60;
     padding: 10px;
     margin-bottom: 15px;
     text-align: center;
@@ -11,7 +11,7 @@
 
 .artist-link {
     text-decoration: none;
-    color: #0e1a20;
+    color: #060f13;
 }
 
 #edit-artist {

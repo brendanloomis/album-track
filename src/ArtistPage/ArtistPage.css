@@ -13,6 +13,16 @@
     margin-bottom: 10px;
 }
 
+.artist-page-buttons button {
+    width: 200px;
+    height: 50px;
+    font-size: 18px;
+}
+
+.artist-page {
+    margin-bottom: 70px;
+}
+
 @media all and (min-width: 800px) {
     .artist-page h2 {
         font-size: 40px;

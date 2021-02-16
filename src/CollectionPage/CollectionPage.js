@@ -64,7 +64,7 @@ class CollectionPage extends React.Component {
                 <ul>
                     {artists}
                 </ul>
-                <Link to='/add-artist'>
+                <Link to='/add-artist' className='add-artist-link'>
                     <button id='add-artist-button'>
                         Add Artist
                     </button>

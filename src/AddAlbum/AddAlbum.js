@@ -3,6 +3,7 @@ import AlbumForm from '../AlbumForm/AlbumForm';
 import AlbumContext from '../AlbumContext';
 import config from '../config';
 import { findAlbumByName } from '../helper-functions';
+import PropTypes from 'prop-types';
 import './AddAlbum.css';
 
 class AddAlbum extends React.Component {
@@ -94,7 +95,14 @@ class AddAlbum extends React.Component {
                 return res.json();
             })
             .then(data => {
-                this.context.addAlbumForUser(data);
+                const albumToAdd = {
+                    album: data.album,
+                    album_name: album.album_name,
+                    artist: album.artist,
+                    genre: album.genre,
+                    usersalbums_id: data.usersalbums_id
+                };
+                this.context.addAlbumForUser(albumToAdd);
                 this.props.history.push(`/collection/${album.artist}`)
             })
             .catch(error => {
@@ -123,5 +131,14 @@ class AddAlbum extends React.Component {
         );
     }
 }
+
+AddAlbum.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    }),
+    match: PropTypes.shape({
+        params: PropTypes.object.isRequired
+    })
+};
 
 export default AddAlbum;

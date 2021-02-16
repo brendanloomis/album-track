@@ -1,6 +1,7 @@
 import React from 'react';
 import AlbumContext from '../AlbumContext';
 import ValidationError from '../ValidationError';
+import PropTypes from 'prop-types';
 import './SongForm.css';
 
 class SongForm extends React.Component {
@@ -82,5 +83,17 @@ class SongForm extends React.Component {
         );
     }
 }
+
+SongForm.propTypes = {
+    song: PropTypes.shape({
+        song_id: PropTypes.number,
+        song_name: PropTypes.string,
+        album: PropTypes.number
+    }),
+    album: PropTypes.string,
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    error: PropTypes.object
+};
 
 export default SongForm;
