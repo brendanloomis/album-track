@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 import Nav from '../Nav/Nav';
 import Landing from '../Landing/Landing';
 import CollectionPage from '../CollectionPage/CollectionPage';
@@ -26,7 +26,8 @@ class App extends React.Component{
     artists: [],
     usernames: [],
     loggedIn: false,
-    userInfo: {}
+    userInfo: {},
+    checkedIfLoggedIn: false
   };
 
   // get artists, albums, songs, and usernames from server
@@ -90,70 +91,128 @@ class App extends React.Component{
       .catch(err => {
         console.error({ err });
       });
+    
+    const loggedInUser = JSON.parse(localStorage.getItem('user'));
+    if (loggedInUser) {
+      this.loginUser(loggedInUser);
+    }
+    this.setState({
+      checkedIfLoggedIn: true
+    });
   }
 
   renderRoutes() {
-    return (
-      <>
-        <ErrorBoundary>
-          <Route 
-            exact 
-            path='/'
-            component={Landing}
-          />
-          <Route
-            exact
-            path='/collection'
-            component={CollectionPage}
-          />
-          <Route
-            exact
-            path='/collection/:artistId'
-            component={ArtistPage}
-          />
-          <Route
-            exact
-            path='/login'
-            component={Login}
-          />
-          <Route
-            exact
-            path='/signup'
-            component={Signup}
-          />
-          <Route 
-            exact
-            path='/add-artist'
-            component={AddArtist}
-          />
-          <Route
-            exact
-            path='/edit-artist/:artist_id'
-            component={EditArtist}
-          />
-          <Route 
-            exact
-            path='/add-album/:artist'
-            component={AddAlbum}
-          />
-          <Route 
-            exact
-            path='/edit-album/:album_id'
-            component={EditAlbum}
-          /> 
-          <Route
-            exact
-            path='/add-song/:album'
-            component={AddSong}
-          />
-          <Route
-            exact
-            path='/edit-song/:song_id'
-            component={EditSong}
-          />
-        </ErrorBoundary>
-        </>
-    )
+    if (this.state.checkedIfLoggedIn) {
+      return (
+        <>
+          <ErrorBoundary>
+            <Route 
+              exact 
+              path='/'
+              component={Landing}
+            />
+            <Route
+              exact
+              path='/collection'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <CollectionPage {...props} />
+                )
+              )}
+            />
+            <Route
+              exact
+              path='/collection/:artistId'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <ArtistPage {...props} />
+                )
+              )}
+            />
+            <Route
+              exact
+              path='/login'
+              component={Login}
+            />
+            <Route
+              exact
+              path='/signup'
+              component={Signup}
+            />
+            <Route 
+              exact
+              path='/add-artist'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <AddArtist {...props} />
+                )
+              )}
+            />
+            <Route
+              exact
+              path='/edit-artist/:artist_id'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <EditArtist {...props} />
+                )
+              )}
+            />
+            <Route 
+              exact
+              path='/add-album/:artist'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <AddAlbum {...props} />
+                )
+              )}
+            />
+            <Route 
+              exact
+              path='/edit-album/:album_id'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <EditAlbum {...props} />
+                )
+              )}
+            /> 
+            <Route
+              exact
+              path='/add-song/:album'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <AddSong {...props} />
+                )
+              )}
+            />
+            <Route
+              exact
+              path='/edit-song/:song_id'
+              render={(props) => (
+                !this.state.loggedIn ? (
+                  <Redirect to='/login' />
+                ) : (
+                  <EditSong {...props} />
+                )
+              )}
+            />
+          </ErrorBoundary>
+          </>
+      )
+    }
   }
 
   // functions for updating state and context

@@ -49,6 +49,7 @@ class Login extends React.Component {
             })
             .then(user => {
                 this.context.loginUser(user);
+                localStorage.setItem('user', JSON.stringify(user));
                 this.props.history.push(`/collection`);
             })
             .catch(error => {

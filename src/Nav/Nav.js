@@ -14,7 +14,7 @@ class Nav extends React.Component {
                 <>
                     <Link to='/collection' className='nav-item'>My Collection</Link>
                     {' '}
-                    <Link to='/' className='nav-item' onClick={e => this.context.logoutUser()}>Log Out</Link>
+                    <Link to='/' className='nav-item' onClick={this.handleLogout}>Log Out</Link>
                 </>
             );
         }
@@ -26,6 +26,11 @@ class Nav extends React.Component {
             </>
         );
     }
+
+    handleLogout = () => {
+        this.context.logoutUser();
+        localStorage.clear();
+    };
 
     render() {
         return (

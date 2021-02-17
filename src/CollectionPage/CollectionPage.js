@@ -63,14 +63,14 @@ class CollectionPage extends React.Component {
         return (
             <div className='collection-page'>
                 <h2>My Collection</h2>
-                <ul>
-                    {artists}
-                </ul>
                 <Link to='/add-artist' className='add-artist-link'>
                     <button id='add-artist-button'>
                         Add Artist
                     </button>
                 </Link>
+                <ul>
+                    {artists}
+                </ul>
             </div>
         );
     }
