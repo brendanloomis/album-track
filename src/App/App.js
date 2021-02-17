@@ -92,9 +92,50 @@ class App extends React.Component{
         console.error({ err });
       });
     
+    // check if the user is logged in and get users albums and artists if they are
     const loggedInUser = JSON.parse(localStorage.getItem('user'));
     if (loggedInUser) {
       this.loginUser(loggedInUser);
+      let userId = loggedInUser.user_id;
+      if (!userId) {
+        userId = this.state.userInfo.user_id;
+      }
+      Promise.all([
+        fetch(`${config.API_ENDPOINT}/usersalbums?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `bearer ${config.API_KEY}`
+            }
+        }),
+        fetch(`${config.API_ENDPOINT}/usersartists?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `bearer ${config.API_KEY}`
+            }
+        })
+      ])
+        .then(([usersAlbumsRes, usersArtistsRes]) => {
+            if (!usersAlbumsRes.ok) {
+                return usersAlbumsRes.json().then(error => {
+                    throw error;
+                });
+            }
+            if (!usersArtistsRes.ok) {
+                return usersArtistsRes.json().then(error => {
+                    throw error;
+                });
+            }
+            return Promise.all([usersAlbumsRes.json(), usersArtistsRes.json()]);
+        })
+        .then(([albumsForUser, artistsForUser]) => {
+            this.getAlbumsForUser(albumsForUser);
+            this.getArtistsForUser(artistsForUser);
+        })
+        .catch(err => {
+            console.error({ err });
+        });
     }
     this.setState({
       checkedIfLoggedIn: true
@@ -102,6 +143,8 @@ class App extends React.Component{
   }
 
   renderRoutes() {
+    // render routes after checking if user is logged in
+    // redirect some paths to login page if the user needs to be logged in to access
     if (this.state.checkedIfLoggedIn) {
       return (
         <>
@@ -227,7 +270,8 @@ class App extends React.Component{
     this.setState({
       userInfo: {},
       loggedIn: false,
-      albumsForUser: []
+      albumsForUser: [],
+      artistsForUser: []
     });
   }
 

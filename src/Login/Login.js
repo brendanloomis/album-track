@@ -51,13 +51,49 @@ class Login extends React.Component {
                 this.context.loginUser(user);
                 localStorage.setItem('user', JSON.stringify(user));
                 this.props.history.push(`/collection`);
+                return user.user_id
+            })
+            .then(userId => {
+                return Promise.all([
+                    fetch(`${config.API_ENDPOINT}/usersalbums?userId=${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'content-type': 'application/json',
+                            'authorization': `bearer ${config.API_KEY}`
+                        }
+                    }),
+                    fetch(`${config.API_ENDPOINT}/usersartists?userId=${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'content-type': 'application/json',
+                            'authorization': `bearer ${config.API_KEY}`
+                        }
+                    })
+                ])
+            })
+            .then(([usersAlbumsRes, usersArtistsRes]) => {
+                if (!usersAlbumsRes.ok) {
+                    return usersAlbumsRes.json().then(error => {
+                        throw error;
+                    });
+                }
+                if (!usersArtistsRes.ok) {
+                    return usersArtistsRes.json().then(error => {
+                        throw error;
+                    });
+                }
+                return Promise.all([usersAlbumsRes.json(), usersArtistsRes.json()]);
+            })
+            .then(([albumsForUser, artistsForUser]) => {
+                this.context.getUserAlbums(albumsForUser);
+                this.context.getUserArtists(artistsForUser);
             })
             .catch(error => {
                 this.setState({
                     error: true
                 });
                 console.error(error);
-            })
+            });
     }
 
     render() {

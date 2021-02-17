@@ -8,48 +8,6 @@ import './CollectionPage.css';
 class CollectionPage extends React.Component {
     static contextType = AlbumContext;
 
-    componentDidMount() {
-        const userId = this.context.userInfo.user_id;
-
-        // get the albums and artists that the user has in their collection
-        Promise.all([
-            fetch(`${config.API_ENDPOINT}/usersalbums?userId=${userId}`, {
-                method: 'GET',
-                headers: {
-                    'content-type': 'application/json',
-                    'authorization': `bearer ${config.API_KEY}`
-                }
-            }),
-            fetch(`${config.API_ENDPOINT}/usersartists?userId=${userId}`, {
-                method: 'GET',
-                headers: {
-                    'content-type': 'application/json',
-                    'authorization': `bearer ${config.API_KEY}`
-                }
-            })
-        ])
-            .then(([usersAlbumsRes, usersArtistsRes]) => {
-                if (!usersAlbumsRes.ok) {
-                    return usersAlbumsRes.json().then(error => {
-                        throw error;
-                    });
-                }
-                if (!usersArtistsRes.ok) {
-                    return usersArtistsRes.json().then(error => {
-                        throw error;
-                    });
-                }
-                return Promise.all([usersAlbumsRes.json(), usersArtistsRes.json()]);
-            })
-            .then(([albumsForUser, artistsForUser]) => {
-                this.context.getUserAlbums(albumsForUser);
-                this.context.getUserArtists(artistsForUser);
-            })
-            .catch(err => {
-                console.error({ err });
-            });
-    }
-
     render() {
         // create a list of Artist components that the user owns
         const artists = this.context.artistsForUser.sort((a, b) => a.artist_id - b.artist_id).map(artist => (
