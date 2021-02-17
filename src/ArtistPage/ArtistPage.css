@@ -14,7 +14,7 @@
 }
 
 .artist-page-buttons button {
-    width: 200px;
+    width: 120px;
     height: 50px;
     font-size: 18px;
 }
@@ -28,4 +28,9 @@
     .artist-page h2 {
         font-size: 40px;
     }
+    .artist-page-buttons button {
+        width: 200px;
+        height: 50px;
+        font-size: 18px;
+    }    
 }
