@@ -17,6 +17,7 @@ class SongForm extends React.Component {
 
     static contextType = AlbumContext;
 
+    // functions to update state for form inputs
     updateSongName(song_name) {
         this.setState({ song_name });
     }
@@ -41,6 +42,7 @@ class SongForm extends React.Component {
     render() {
         const { song_id, song_name, album } = this.state;
         const { error, onCancel } = this.props;
+        // create options for album input
         const albumOptions = this.context.albumsForUser.map(album => {
             return (
                 <option key={album.album} value={album.album}>
@@ -77,6 +79,7 @@ class SongForm extends React.Component {
                 {error && <ValidationError message={error.message} />}
                 <div className='song-form-buttons'>
                     <button type='submit'>Submit</button>
+                    {' '}
                     <button onClick={onCancel}>Cancel</button>
                 </div>
             </form>

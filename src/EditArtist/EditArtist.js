@@ -15,6 +15,7 @@ class EditArtist extends React.Component {
 
     static contextType = AlbumContext;
 
+    // get the current information for the artist
     componentDidMount() {
         const { artist_id } = this.props.match.params;
 
@@ -78,6 +79,7 @@ class EditArtist extends React.Component {
         this.props.history.push('/collection');
     }
 
+    // renders the form with the correct values after the get request is done
     renderForm = (artist) => {
         if(this.state.infoReady) {
             return (

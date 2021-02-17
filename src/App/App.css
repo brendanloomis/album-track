@@ -44,6 +44,7 @@ button:hover {
     cursor: pointer;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     h1 {
         font-size: 45px;

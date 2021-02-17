@@ -16,7 +16,11 @@ class AddAlbum extends React.Component {
     handleSubmit = (album) => {
         this.setState({ error: null });
         const userId = this.context.userInfo.user_id;
+        
+        // check if the album already exists in the database
         let albumFound = findAlbumByName(this.context.allAlbums, album.album_name, parseInt(album.artist));
+        
+        // if the album doesn't exist, add the album into the database and then add to user's albums
         if (!albumFound) {
             fetch(`${config.API_ENDPOINT}/albums`, {
                 method: 'POST',
@@ -75,6 +79,7 @@ class AddAlbum extends React.Component {
                     this.setState({ error });
                 });
         } else {
+            // if album is already in the database, add it to the user's albums
             fetch(`${config.API_ENDPOINT}/usersalbums`, {
                 method: 'POST',
                 headers: {

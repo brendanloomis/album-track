@@ -13,6 +13,7 @@ class ArtistForm extends React.Component {
         artist: {}
     }
 
+    // function to update state for form input
     updateArtistName(artist_name) {
         this.setState({ artist_name });
     }
@@ -49,6 +50,7 @@ class ArtistForm extends React.Component {
                 {error && <ValidationError message={error.message} />}
                 <div className='artist-form-buttons'>
                     <button type='submit'>Submit</button>
+                    {' '}
                     <button onClick={onCancel}>Cancel</button>
                 </div>
             </form>

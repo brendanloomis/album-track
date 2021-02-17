@@ -40,7 +40,7 @@
     margin: 0px;
 }
 
-
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .login {
         width: 500px;

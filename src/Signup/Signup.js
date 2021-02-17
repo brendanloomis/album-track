@@ -36,6 +36,7 @@ class Signup extends React.Component {
 
     static contextType = AlbumContext;
 
+    // functions to update state for form inputs
     updateFirst(first) {
         this.setState({first_name: {
             value: first,

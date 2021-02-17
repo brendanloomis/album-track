@@ -10,8 +10,11 @@ class ArtistPage extends React.Component {
     static contextType = AlbumContext;
 
     render() {
+        // get the artist information
         const { artistId } = this.props.match.params;
         const artist = findArtist(this.context.artists, parseInt(artistId)) || {};
+
+        // get the list of albums the user owns for the artist and create a list of Album components
         const albumsForArtist = getAlbumsForArtist(this.context.allAlbums, parseInt(artistId));
         const ownedAlbumsForArtist = getOwnedAlbums(albumsForArtist, this.context.albumsForUser);
         const albums = ownedAlbumsForArtist.sort((a, b) => a.album - b.album).map(album => (

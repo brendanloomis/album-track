@@ -17,6 +17,7 @@ class EditSong extends React.Component {
 
     static contextType = AlbumContext;
 
+    // get the current information for the song
     componentDidMount() {
         const { song_id } = this.props.match.params;
         
@@ -51,6 +52,8 @@ class EditSong extends React.Component {
 
     handleSubmit = (song) => {
         this.setState({ error: null });
+
+        // get artist for song to be used for redirect after submitting the form
         const albumForSong = findAlbum(this.context.allAlbums, parseInt(song.album));
         const artistForSong = findArtist(this.context.artists, albumForSong.artist);
 
@@ -83,6 +86,7 @@ class EditSong extends React.Component {
         this.props.history.goBack();
     }
 
+    // renders the form with the correct values after the get request is done
     renderForm = (song) => {
         if (this.state.infoReady) {
             return (

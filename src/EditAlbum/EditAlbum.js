@@ -17,6 +17,7 @@ class EditAlbum extends React.Component {
 
     static contextType = AlbumContext;
 
+    // get the current information for the album
     componentDidMount() {
         const { album_id } = this.props.match.params;
 
@@ -82,6 +83,7 @@ class EditAlbum extends React.Component {
         this.props.history.goBack();
     }
 
+    // renders the form with the correct values after the get request is done
     renderForm = (album) => {
         if (this.state.infoReady) {
             return (

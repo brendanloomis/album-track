@@ -18,6 +18,7 @@
     display: block;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .edit-album {
         width: 500px;

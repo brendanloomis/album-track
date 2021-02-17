@@ -11,7 +11,8 @@ class Album extends React.Component {
     static contextType = AlbumContext;
 
     handleDelete = (album_id) => {
-        const user_id = this.context.userInfo.user_id;
+        // find the usersalbums_id to delete from user's albums list
+        // will not delete album from database completely
         const usersalbums_id = findUsersAlbumsId(this.context.albumsForUser, album_id);
         fetch(`${config.API_ENDPOINT}/usersalbums/${usersalbums_id}`, {
             method: 'DELETE',
@@ -36,6 +37,7 @@ class Album extends React.Component {
     }
 
     render() {
+        // get the songs that are on the album, and create a list of Song components
         const songsForAlbum = getSongsForAlbum(this.context.songs, this.props.id);
         const songs = songsForAlbum.sort((a, b) => a.song_id - b.song_id).map(song => (
             <li key={song.song_id}>

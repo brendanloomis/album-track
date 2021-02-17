@@ -10,7 +10,8 @@ class Artist extends React.Component {
     static contextType = AlbumContext;
 
     handleDelete = (artist_id) => {
-        const user_id = this.context.userInfo.user_id;
+        // find the usersartists_id to delete from user's artist list
+        // will not delete artist from database completely
         const usersartists_id = findUsersArtistsId(this.context.artistsForUser, artist_id);
         fetch(`${config.API_ENDPOINT}/usersartists/${usersartists_id}`, {
             method: 'DELETE',

@@ -6,6 +6,8 @@ import './Nav.css';
 class Nav extends React.Component {
     static contextType = AlbumContext;
 
+    // if user is logged in render a log out link in the Nav bar
+    // if user is not logged in render a log in link in the Nav bar and My Collection links to login
     checkLoggedIn() {
         if (this.context.loggedIn) {
             return (
@@ -26,7 +28,6 @@ class Nav extends React.Component {
     }
 
     render() {
-
         return (
             <div className='nav'>
                 <Link to='/' className='nav-item'>Home</Link>

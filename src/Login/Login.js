@@ -15,6 +15,7 @@ class Login extends React.Component {
 
     static contextType = AlbumContext;
 
+    // functions to update state for form inputs
     updateUsername(username) {
         this.setState({ username });
     }

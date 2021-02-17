@@ -16,8 +16,11 @@ class AddArtist extends React.Component {
     handleSubmit = (artist) => {
         this.setState({ error: null });
         const userId = this.context.userInfo.user_id;
+
+        // check if the artist already exists in the database
         let artistFound = findArtistByName(this.context.artists, artist.artist_name)
 
+        // if the artist doesn't exist, add it to the database, then add it to the user's albums
         if (!artistFound) {
             fetch(`${config.API_ENDPOINT}/artists`, {
                 method: 'POST',
@@ -74,6 +77,7 @@ class AddArtist extends React.Component {
                     this.setState({ error });
                 });
         } else {
+            // if the album is in the database, add to the user's albums
             fetch(`${config.API_ENDPOINT}/usersartists`, {
                 method: 'POST',
                 headers: {

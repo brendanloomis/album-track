@@ -11,6 +11,7 @@ class CollectionPage extends React.Component {
     componentDidMount() {
         const userId = this.context.userInfo.user_id;
 
+        // get the albums and artists that the user has in their collection
         Promise.all([
             fetch(`${config.API_ENDPOINT}/usersalbums?userId=${userId}`, {
                 method: 'GET',
@@ -50,6 +51,7 @@ class CollectionPage extends React.Component {
     }
 
     render() {
+        // create a list of Artist components that the user owns
         const artists = this.context.artistsForUser.sort((a, b) => a.artist_id - b.artist_id).map(artist => (
             <li key={artist.artist_id}>
                 <Artist

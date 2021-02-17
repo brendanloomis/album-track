@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import store from '../store';
 import Nav from '../Nav/Nav';
 import Landing from '../Landing/Landing';
 import CollectionPage from '../CollectionPage/CollectionPage';
@@ -30,6 +29,7 @@ class App extends React.Component{
     userInfo: {}
   };
 
+  // get artists, albums, songs, and usernames from server
   componentDidMount() {
     Promise.all([
       fetch(`${config.API_ENDPOINT}/artists`, {
@@ -93,7 +93,6 @@ class App extends React.Component{
   }
 
   renderRoutes() {
-    const { artists, albums, songs } = store;
     return (
       <>
         <ErrorBoundary>
@@ -157,6 +156,7 @@ class App extends React.Component{
     )
   }
 
+  // functions for updating state and context
   loginUser = user => {
     this.setState({
       userInfo: user,
@@ -184,6 +184,7 @@ class App extends React.Component{
     });
   }
 
+  // add functions
   addArtist = (artist) => {
     this.setState({
       artists: [ ...this.state.artists, artist ]
@@ -214,6 +215,7 @@ class App extends React.Component{
     });
   }
 
+  // update functions
   updateArtist = (updatedArtist) => {
     this.setState({
       artists: this.state.artists.map(a => 
@@ -238,6 +240,7 @@ class App extends React.Component{
     });
   }
 
+  // delete functions
   deleteArtistForUser = (artistId) => {
     const newArtistsForUser = this.state.artistsForUser.filter(a => (
       a.artist_id !== artistId
@@ -291,7 +294,6 @@ class App extends React.Component{
       updateSong: this.updateSong,
       deleteSong: this.deleteSong
     }
-    const users = store.users;
     return (
       <AlbumContext.Provider value={contextValue}>
         <div className='App'>

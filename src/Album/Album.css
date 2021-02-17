@@ -17,6 +17,7 @@
     padding-bottom: 20px;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .album {
         padding-left: 25px;

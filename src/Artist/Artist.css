@@ -18,6 +18,7 @@
     width: 56px;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .artist h3 {
         font-size: 32px;

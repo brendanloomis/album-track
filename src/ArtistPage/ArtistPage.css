@@ -23,6 +23,7 @@
     margin-bottom: 70px;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .artist-page h2 {
         font-size: 40px;

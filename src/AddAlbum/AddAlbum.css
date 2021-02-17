@@ -18,6 +18,7 @@
     font-size: 35px;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .add-album {
         width: 500px;

@@ -24,6 +24,7 @@
     text-decoration: none;
 }
 
+/* Responsive design for desktop */
 @media all and (min-width: 800px) {
     .collection-page {
         margin: 20px 100px 70px 100px;

@@ -15,6 +15,8 @@ class AddSong extends React.Component {
 
     handleSubmit = (song) => {
         this.setState({ error: null });
+
+        // get the artist for the song (is used to redirect to artist page after submit)
         const albumForSong = findAlbum(this.context.allAlbums, parseInt(song.album));
         const artistForSong = findArtist(this.context.artists, albumForSong.artist);
 
