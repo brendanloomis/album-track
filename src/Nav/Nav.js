@@ -1,23 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import AlbumContext from '../AlbumContext';
 import './Nav.css';
 
-class Nav extends React.Component {
-    static contextType = AlbumContext;
+function Nav() {
+    const context = useContext(AlbumContext);
 
-    // if user is logged in render a log out link in the Nav bar
-    // if user is not logged in render a log in link in the Nav bar and My Collection links to login
-    checkLoggedIn() {
-        if (this.context.loggedIn) {
+    // if user is logged in, render a log out link in the Nav bar
+    // if user is not logged in, render a log in link in the Nav bar and My collection linkes to logged in
+    const checkLoggedIn = () => {
+        if (context.loggedIn) {
             return (
                 <>
                     <Link to='/collection' className='nav-item'>My Collection</Link>
                     {' '}
-                    <Link to='/' className='nav-item' onClick={this.handleLogout}>Log Out</Link>
+                    <Link to='/' className='nav-item' onClick={handleLogout}>Log Out</Link>
                 </>
-            );
-        }
+            )
+        };
         return (
             <>
                 <Link to='/login' className='nav-item'>My Collection</Link>
@@ -27,20 +27,18 @@ class Nav extends React.Component {
         );
     }
 
-    handleLogout = () => {
-        this.context.logoutUser();
+    const handleLogout = () => {
+        context.logoutUser();
         localStorage.clear();
     };
 
-    render() {
-        return (
-            <div className='nav'>
-                <Link to='/' className='nav-item'>Home</Link>
-                {' '}
-                {this.checkLoggedIn()}
-            </div>
-        );
-    }
-};
+    return (
+        <div className='nav'>
+            <Link to='/' className='nav-item'>Home</Link>
+            {' '}
+            {checkLoggedIn()}
+        </div>
+    );
+}
 
 export default Nav;

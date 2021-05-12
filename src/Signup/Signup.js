@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
@@ -6,8 +6,8 @@ import ValidationError from '../ValidationError';
 import PropTypes from 'prop-types';
 import './Signup.css';
 
-class Signup extends React.Component {
-    state = {
+function Signup(props) {
+    const initialSignupState = {
         first_name: {
             value: '',
             touched: false
@@ -34,68 +34,44 @@ class Signup extends React.Component {
         }
     };
 
-    static contextType = AlbumContext;
+    const [signupData, setSignupData] = useState({ ...initialSignupState });
 
-    // functions to update state for form inputs
-    updateFirst(first) {
-        this.setState({first_name: {
-            value: first,
-            touched: true
-        }});
-    }
+    const context = useContext(AlbumContext);
 
-    updateLast(last) {
-        this.setState({last_name: {
-            value: last,
-            touched: true
-        }});
-    }
-
-    updateUsername(username) {
-        this.setState({username: {
-            value: username,
-            touched: true
-        }});
-    }
-
-    updatePassword(password) {
-        this.setState({password: {
-            value: password,
-            touched: true
-        }});
-    }
-
-    updateRepeatPassword(repeatPassword) {
-        this.setState({repeatPassword: {
-            value: repeatPassword,
-            touched: true
-        }});
+    const handleChange = ({ target }) => {
+        setSignupData({
+            ...signupData,
+            [target.name]: {
+                value: target.value,
+                touched: true
+            }
+        });
     }
 
     // Validation functions for Sign Up form
-    validateFirst() {
-        const firstName = this.state.first_name.value.trim();
+    const validateFirst = () => {
+        const firstName = signupData.first_name.value.trim();
         if (firstName.length === 0) {
             return 'First Name is required';
         }
     }
 
-    validateLast() {
-        const lastName = this.state.last_name.value.trim();
+    const validateLast = () => {
+        const lastName = signupData.last_name.value.trim();
         if (lastName.length === 0) {
             return 'Last Name is required';
         }
     }
 
-    validateUsername() {
-        const username = this.state.username.value.trim();
+    const validateUsername = () => {
+        const username = signupData.username.value.trim();
         if (username.length === 0) {
             return 'Username is required';
         }
     }
 
-    validatePassword() {
-        const password = this.state.password.value.trim();
+    const validatePassword = () => {
+        const password = signupData.password.value.trim();
         if (password.length === 0) {
             return 'Password is required';
         } else if (password.length < 6) {
@@ -105,26 +81,27 @@ class Signup extends React.Component {
         }
     }
 
-    validateRepeatPassword() {
-        const repeatPassword = this.state.repeatPassword.value.trim();
-        const password = this.state.password.value.trim();
+    const validateRepeatPassword = () => {
+        const repeatPassword = signupData.repeatPassword.value.trim();
+        const password = signupData.password.value.trim();
         if (repeatPassword !== password) {
             return 'Passwords do not match';
         }
     }
 
     // event handler for submitting sign up form
-    handleSignup = event => {
+    const handleSignup = event => {
         event.preventDefault();
         const userInfo = {
-            first_name: this.state.first_name.value,
-            last_name: this.state.last_name.value,
-            username: this.state.username.value,
-            password: this.state.password.value
+            first_name: signupData.first_name.value,
+            last_name: signupData.last_name.value,
+            username: signupData.username.value,
+            password: signupData.password.value
         };
-        const usernames = this.context.usernames;
+        const usernames = context.usernames;
         if (usernames.filter(un => un.username === userInfo.username).length > 0) {
-            this.setState({
+            setSignupData({
+                ...signupData,
                 error: {
                     hasError: true,
                     message: 'Username already exists'
@@ -150,99 +127,97 @@ class Signup extends React.Component {
             })
             .then(user => {
                 delete user.password;
-                this.context.loginUser(user);
-                this.context.loggedIn = true;
-                this.props.history.push('/collection');
+                context.loginUser(user);
+                context.loggedIn = true;
+                props.history.push('/collection');
             })
             .catch(error => {
                 console.error({ error });
             })
     }
-
-    render() {
-        const firstError = this.validateFirst();
-        const lastError = this.validateLast();
-        const usernameError = this.validateUsername();
-        const passwordError = this.validatePassword();
-        const repeatPasswordError = this.validateRepeatPassword();
-        return (
-            <div className='signup'>
-                <h2>Sign Up</h2>
-                <form className='signup-form' onSubmit={this.handleSignup}>
-                    <div>
-                        <label htmlFor='first-name'>First Name</label>
-                        <input 
-                            type='text' 
-                            name='first-name' 
-                            id='first-name'
-                            onChange={e => this.updateFirst(e.target.value)}
-                        />
-                        {this.state.first_name.touched && <ValidationError message={firstError} />}
-                    </div>
-                    <div>
-                        <label htmlFor='last-name'>Last Name</label>
-                        <input 
-                            type='text' 
-                            name='last-name'
-                            id='last-name'
-                            onChange={e => this.updateLast(e.target.value)}
-                        />
-                        {this.state.last_name.touched && <ValidationError message={lastError} />}
-                    </div>
-                    <div>
-                        <label htmlFor='username'>Username</label>
-                        <input 
-                            type='text' 
-                            name='username' 
-                            id='username' 
-                            onChange={e => this.updateUsername(e.target.value)}
-                        />
-                        {this.state.username.touched && <ValidationError message={usernameError} />}
-                    </div>
-                    <div>
-                        <label htmlFor='password'>Password</label>
-                        <input 
-                            type='password' 
-                            name='password' 
-                            id='password' 
-                            onChange={e => this.updatePassword(e.target.value)}
-                        />
-                        {this.state.password.touched && <ValidationError message={passwordError} />}
-                    </div>
-                    <div>
-                        <label htmlFor='repeat-password'>Repeat Password</label>
-                        <input 
-                            type='password' 
-                            name='repeat-password' 
-                            id='repeat-password' 
-                            onChange={e => this.updateRepeatPassword(e.target.value)}
-                        />
-                        {this.state.repeatPassword.touched && <ValidationError message={repeatPasswordError} />}
-                    </div>
-                    {this.state.error.hasError && <ValidationError message={this.state.error.message} />}
-                    <div className='signup-buttons'>
-                        <button 
-                            type='submit'
-                            className='signup-submit'
-                            disabled={this.validateFirst() || this.validateLast() || this.validateUsername() || this.validatePassword() || this.validateRepeatPassword()}
-                        >
-                            Sign Up
-                        </button>
-                        {' '}
-                        <Link to='/'>
-                            <button>Cancel</button>
-                        </Link>
-                    </div>
-                </form>
-                <p>
-                    Already have an account? 
-                    <Link to='/login'>
-                        <button className='login-link'>Log In</button>
+    
+    const firstError = validateFirst();
+    const lastError = validateLast();
+    const usernameError = validateUsername();
+    const passwordError = validatePassword();
+    const repeatPasswordError = validateRepeatPassword();
+    return (
+        <div className='signup'>
+            <h2>Sign Up</h2>
+            <form className='signup-form' onSubmit={handleSignup}>
+                <div>
+                    <label htmlFor='first_name'>First Name</label>
+                    <input 
+                        type='text' 
+                        name='first_name' 
+                        id='first_name'
+                        onChange={handleChange}
+                    />
+                    {signupData.first_name.touched && <ValidationError message={firstError} />}
+                </div>
+                <div>
+                    <label htmlFor='last_name'>Last Name</label>
+                    <input 
+                        type='text' 
+                        name='last_name'
+                        id='last_name'
+                        onChange={handleChange}
+                    />
+                    {signupData.last_name.touched && <ValidationError message={lastError} />}
+                </div>
+                <div>
+                    <label htmlFor='username'>Username</label>
+                    <input 
+                        type='text' 
+                        name='username' 
+                        id='username' 
+                        onChange={handleChange}
+                    />
+                    {signupData.username.touched && <ValidationError message={usernameError} />}
+                </div>
+                <div>
+                    <label htmlFor='password'>Password</label>
+                    <input 
+                        type='password' 
+                        name='password' 
+                        id='password' 
+                        onChange={handleChange}
+                    />
+                    {signupData.password.touched && <ValidationError message={passwordError} />}
+                </div>
+                <div>
+                    <label htmlFor='repeatPassword'>Repeat Password</label>
+                    <input 
+                        type='password' 
+                        name='repeatPassword' 
+                        id='repeatPassword' 
+                        onChange={handleChange}
+                    />
+                    {signupData.repeatPassword.touched && <ValidationError message={repeatPasswordError} />}
+                </div>
+                {signupData.error.hasError && <ValidationError message={signupData.error.message} />}
+                <div className='signup-buttons'>
+                    <button 
+                        type='submit'
+                        className='signup-submit'
+                        disabled={validateFirst() || validateLast() || validateUsername() || validatePassword() || validateRepeatPassword()}
+                    >
+                        Sign Up
+                    </button>
+                    {' '}
+                    <Link to='/'>
+                        <button>Cancel</button>
                     </Link>
-                </p>
-            </div>
-        );
-    }
+                </div>
+            </form>
+            <p>
+                Already have an account? 
+                <Link to='/login'>
+                    <button className='login-link'>Log In</button>
+                </Link>
+            </p>
+        </div>
+    );
 }
 
 Signup.propTypes = {
