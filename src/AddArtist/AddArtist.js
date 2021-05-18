@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import ArtistForm from '../ArtistForm/ArtistForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
@@ -6,19 +6,21 @@ import { findArtistByName } from '../helper-functions';
 import PropTypes from 'prop-types';
 import './AddArtist.css';
 
-class AddArtist extends React.Component {
-    state = {
+function AddArtist(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
         error: null
-    }
+    };
 
-    static contextType = AlbumContext;
+    const [error, setError] = useState({ ...initialState });
 
-    handleSubmit = (artist) => {
-        this.setState({ error: null });
-        const userId = this.context.userInfo.user_id;
+    const handleSubmit = (artist) => {
+        setError({ ...initialState });
+        const userId = context.userInfo.user_id;
 
         // check if the artist already exists in the database
-        let artistFound = findArtistByName(this.context.artists, artist.artist_name)
+        let artistFound = findArtistByName(context.artists, artist.artist_name)
 
         // if the artist doesn't exist, add it to the database, then add it to the user's albums
         if (!artistFound) {
@@ -39,7 +41,7 @@ class AddArtist extends React.Component {
                     return res.json();
                 })
                 .then(data => {
-                    this.context.addArtist(data);
+                    context.addArtist(data);
                     return data.artist_id;
                 })
                 .then(artist_id => {
@@ -69,12 +71,12 @@ class AddArtist extends React.Component {
                         artist_name: artist.artist_name,
                         usersartists_id: data.usersartists_id
                     };
-                    this.context.addArtistForUser(artistToAdd);
-                    this.props.history.push(`/collection/${data.artist}`);
+                    context.addArtistForUser(artistToAdd);
+                    props.history.push(`/collection/${data.artist}`);
                 })
                 .catch(error => {
                     console.error(error);
-                    this.setState({ error });
+                    setError({ error });
                 });
         } else {
             // if the album is in the database, add to the user's albums
@@ -103,32 +105,30 @@ class AddArtist extends React.Component {
                     artist_name: artist.artist_name,
                     usersartists_id: data.usersartists_id
                 };
-                this.context.addArtistForUser(artistToAdd);
-                this.props.history.push(`/collection/${data.artist}`);
+                context.addArtistForUser(artistToAdd);
+                props.history.push(`/collection/${data.artist}`);
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setError({ error });
             });
         }
     }
 
-    handleClickCancel = () => {
-        this.props.history.push('/collection')
+    const handleClickCancel = () => {
+        props.history.push('/collection')
     }
 
-    render() {
-        return (
-            <div className='add-artist'>
-                <h2>Add Artist</h2>
-                <ArtistForm
-                    error={this.state.error}
-                    onSubmit={this.handleSubmit}
-                    onCancel={this.handleClickCancel}
-                />
-            </div>
-        );
-    }
+    return (
+        <div className='add-artist'>
+            <h2>Add Artist</h2>
+            <ArtistForm
+                error={error}
+                onSubmit={handleSubmit}
+                onCancel={handleClickCancel}
+            />
+        </div>
+    );
 }
 
 AddArtist.propTypes = {

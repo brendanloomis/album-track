@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import SongForm from '../SongForm/SongForm';
 import AlbumContext from '../AlbumContext';
 import config from '../config';
@@ -6,19 +6,21 @@ import { findAlbum, findArtist } from '../helper-functions';
 import PropTypes from 'prop-types';
 import './AddSong.css';
 
-class AddSong extends React.Component {
-    state = {
+function AddSong(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
         error: null
     };
 
-    static contextType = AlbumContext;
+    const [error, setError] = useState({ ...initialState });
 
-    handleSubmit = (song) => {
-        this.setState({ error: null });
+    const handleSubmit = (song) => {
+        setError({ ...initialState });
 
         // get the artist for the song (is used to redirect to artist page after submit)
-        const albumForSong = findAlbum(this.context.allAlbums, parseInt(song.album));
-        const artistForSong = findArtist(this.context.artists, albumForSong.artist);
+        const albumForSong = findAlbum(context.allAlbums, parseInt(song.album));
+        const artistForSong = findArtist(context.artists, albumForSong.artist);
 
         fetch(`${config.API_ENDPOINT}/songs`, {
             method: 'POST',
@@ -37,33 +39,32 @@ class AddSong extends React.Component {
                 return res.json();
             })
             .then(data => {
-                this.context.addSong(data);
-                this.props.history.push(`/collection/${artistForSong.artist_id}`);
+                context.addSong(data);
+                props.history.push(`/collection/${artistForSong.artist_id}`);
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setError({ error });
             });
     }
 
-    handleClickCancel = () => {
-        this.props.history.goBack();
+    const handleClickCancel = () => {
+        props.history.goBack();
     }
 
-    render() {
-        const { album } = this.props.match.params;
-        return (
-            <div className='add-song'>
-                <h2>Add Song</h2>
-                <SongForm 
-                    error={this.state.error}
-                    onSubmit={this.handleSubmit}
-                    onCancel={this.handleClickCancel}
-                    album={album}
-                />
-            </div>
-        )
-    }
+    const { album } = props.match.params;
+
+    return (
+        <div className='add-song'>
+            <h2>Add Song</h2>
+            <SongForm 
+                error={error}
+                onSubmit={handleSubmit}
+                onCancel={handleClickCancel}
+                album={album}
+            />
+        </div>
+    )
 }
 
 AddSong.propTypes = {
