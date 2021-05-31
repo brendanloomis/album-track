@@ -25,6 +25,8 @@ const AlbumContext = React.createContext({
     addSong: () => {},
     updateSong: () => {},
     deleteSong: () => {},
+    updateAlbumForUser: () => {},
+    updateArtistForUser: () => {}
 });
 
 export default AlbumContext;

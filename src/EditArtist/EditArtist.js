@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import ArtistForm from '../ArtistForm/ArtistForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
 import PropTypes from 'prop-types';
 import './EditArtist.css';
 
-class EditArtist extends React.Component {
-    state = {
+function EditArtist(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
         error: null,
         artist_id: null,
         artist_name: null,
         infoReady: false
     };
 
-    static contextType = AlbumContext;
+    const [formData, setFormData] = useState({ ...initialState });
 
     // get the current information for the artist
-    componentDidMount() {
-        const { artist_id } = this.props.match.params;
+    useEffect(() => {
+        const { artist_id } = props.match.params;
 
         fetch(`${config.API_ENDPOINT}/artists/${artist_id}`, {
             method: 'GET',
@@ -35,7 +37,7 @@ class EditArtist extends React.Component {
                 return res.json();
             })
             .then(data => {
-                this.setState({
+                setFormData({
                     artist_id: data.artist_id,
                     artist_name: data.artist_name,
                     infoReady: true
@@ -43,12 +45,12 @@ class EditArtist extends React.Component {
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setFormData({ error });
             })
-    }
+    }, []);
 
-    handleSubmit = (artist) => {
-        this.setState({ error: null });
+    const handleSubmit = (artist) => {
+        setFormData({ error: null });
         
         fetch(`${config.API_ENDPOINT}/artists/${artist.artist_id}`, {
             method: 'PATCH',
@@ -66,45 +68,45 @@ class EditArtist extends React.Component {
                 }
             })
             .then(() => {
-                this.context.updateArtist(artist)
-                this.props.history.push('/collection')
+                context.updateArtist(artist);
+                context.updateArtistForUser(artist);
+                props.history.push('/collection');
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setFormData({ error });
             });
     }
 
-    handleClickCancel = () => {
-        this.props.history.push('/collection');
+    const handleClickCancel = () => {
+        props.history.push('/collection');
     }
 
     // renders the form with the correct values after the get request is done
-    renderForm = (artist) => {
-        if(this.state.infoReady) {
+    const renderForm = (artist) => {
+        if(formData.infoReady) {
             return (
                 <ArtistForm
-                    error={this.state.error}
-                    onSubmit={this.handleSubmit}
-                    onCancel={this.handleClickCancel}
+                    error={formData.error}
+                    onSubmit={handleSubmit}
+                    onCancel={handleClickCancel}
                     artist={artist}
                 />
             );
         }
     }
 
-    render() {
-        const artist = {
-            artist_id: this.state.artist_id,
-            artist_name: this.state.artist_name
-        };
-        return (
-            <div className='edit-artist'>
-                <h2>Edit Artist</h2>
-                {this.renderForm(artist)}
-            </div>
-        );
-    }
+    const artist = {
+        artist_id: formData.artist_id,
+        artist_name: formData.artist_name
+    };
+
+    return (
+        <div className='edit-artist'>
+            <h2>Edit Artist</h2>
+            {renderForm(artist)}
+        </div>
+    );
 }
 
 EditArtist.propTypes = {

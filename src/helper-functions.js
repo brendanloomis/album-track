@@ -7,7 +7,7 @@ export const findAlbum = (albums, albumId) =>
 export const getAlbumsForArtist = (albums, artistId) => (
     (!artistId)
         ? albums
-        : albums.filter(album => album.artist === artistId)
+        : albums.filter(album => parseInt(album.artist) === artistId)
 );
 
 export const getSongsForAlbum = (songs, albumId) => (

@@ -16,7 +16,7 @@ function ArtistPage(props) {
     // get the list of albums the user owns for the artist and create a list of Album components
     const albumsForArtist = getAlbumsForArtist(context.allAlbums, parseInt(artistId));
     const ownedAlbumsForArtist = getOwnedAlbums(albumsForArtist, context.albumsForUser);
-    const albums = ownedAlbumsForArtist.sort((a, b) => a.album - b.album).map(album => (
+    const albums = ownedAlbumsForArtist.sort((a, b) => a.album_id - b.album_id).map(album => (
         <li key={album.album_id}>
             <Album
                 id={album.album_id}
@@ -25,6 +25,8 @@ function ArtistPage(props) {
             />
         </li>
     ));
+
+
 
     return (
         <div className='artist-page'>

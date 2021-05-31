@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import SongForm from '../SongForm/SongForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
@@ -6,20 +6,22 @@ import { findAlbum, findArtist } from '../helper-functions';
 import PropTypes from 'prop-types';
 import './EditSong.css';
 
-class EditSong extends React.Component {
-    state = {
+function EditSong(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
         error: null,
         song_id: null,
         song_name: null,
         album: null,
-        infoReady: false
-    };
+        infoReady: null
+    }
 
-    static contextType = AlbumContext;
+    const [formData, setFormData] = useState({ ...initialState });
 
     // get the current information for the song
-    componentDidMount() {
-        const { song_id } = this.props.match.params;
+    useEffect(() => {
+        const { song_id } = props.match.params;
         
         fetch(`${config.API_ENDPOINT}/songs/${song_id}`, {
             method: 'GET',
@@ -37,7 +39,7 @@ class EditSong extends React.Component {
                 return res.json();
             })
             .then(data => {
-                this.setState({
+                setFormData({
                     song_id: data.song_id,
                     song_name: data.song_name,
                     album: data.album,
@@ -46,16 +48,16 @@ class EditSong extends React.Component {
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setFormData({ error });
             });
-    }
+    }, []);
 
-    handleSubmit = (song) => {
-        this.setState({ error: null });
+    const handleSubmit = (song) => {
+        setFormData({ error: null });
 
         // get artist for song to be used for redirect after submitting the form
-        const albumForSong = findAlbum(this.context.allAlbums, parseInt(song.album));
-        const artistForSong = findArtist(this.context.artists, albumForSong.artist);
+        const albumForSong = findAlbum(context.allAlbums, parseInt(song.album));
+        const artistForSong = findArtist(context.artists, albumForSong.artist);
 
         fetch(`${config.API_ENDPOINT}/songs/${song.song_id}`, {
             method: 'PATCH',
@@ -73,43 +75,41 @@ class EditSong extends React.Component {
                 }
             })
             .then(() => {
-                this.context.updateSong(song);
-                this.props.history.push(`/collection/${artistForSong.artist_id}`);
+                context.updateSong(song);
+                props.history.push(`/collection/${artistForSong.artist_id}`);
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setFormData({ error });
             });
     }
 
-    handleClickCancel = () => {
-        this.props.history.goBack();
+    const handleClickCancel = () => {
+        props.history.goBack();
     }
 
     // renders the form with the correct values after the get request is done
-    renderForm = (song) => {
-        if (this.state.infoReady) {
+    const renderForm = (song) => {
+        if (formData.infoReady) {
             return (
                 <SongForm
-                    error={this.state.error}
-                    onSubmit={this.handleSubmit}
-                    onCancel={this.handleClickCancel}
+                    error={formData.error}
+                    onSubmit={handleSubmit}
+                    onCancel={handleClickCancel}
                     song={song}
                 />
             );
         }
     }
 
-    render() {
-        const { song_id, song_name, album } = this.state;
-        const song = { song_id, song_name, album};
-        return (
-            <div className='edit-song'>
-                <h2>Edit Song</h2>
-                {this.renderForm(song)}
-            </div>
-        );
-    }
+    const { song_id, song_name, album } = formData;
+    const song = { song_id, song_name, album};
+    return (
+        <div className='edit-song'>
+            <h2>Edit Song</h2>
+            {renderForm(song)}
+        </div>
+    );
 }
 
 EditSong.propTypes = {

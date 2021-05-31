@@ -327,6 +327,17 @@ class App extends React.Component{
     });
   }
 
+  updateArtistForUser = (updatedArtist) => {
+    this.setState({
+      artistsForUser: this.state.artistsForUser.map(a =>
+        (a.artist_id !== updatedArtist.artist_id) ? a : {
+          ...a,
+          ...updatedArtist
+        }
+      )
+    })
+  }
+
   updateAlbum = (updatedAlbum) => {
     this.setState({
       allAlbums: this.state.allAlbums.map(a => 
@@ -335,10 +346,27 @@ class App extends React.Component{
     });
   }
 
+  updateAlbumForUser = (updatedAlbum) => {
+    this.setState({
+      albumsForUser: this.state.albumsForUser.map(a => 
+        (a.album !== updatedAlbum.album_id) ? a : {
+          ...a,
+          album: updatedAlbum.album_id,
+          album_name: updatedAlbum.album_name,
+          artist: updatedAlbum.artist,
+          genre: updatedAlbum.genre
+        }
+      )
+    });
+  }
+
   updateSong = (updatedSong) => {
     this.setState({
       songs: this.state.songs.map(s => 
-        (s.song_id !== updatedSong.song_id) ? s : updatedSong
+        (s.song_id !== updatedSong.song_id) ? s : {
+          ...updatedSong,
+          album: parseInt(updatedSong.album)
+        }
       )
     });
   }
@@ -395,7 +423,9 @@ class App extends React.Component{
       deleteAlbum: this.deleteAlbumForUser,
       addSong: this.addSong,
       updateSong: this.updateSong,
-      deleteSong: this.deleteSong
+      deleteSong: this.deleteSong,
+      updateAlbumForUser: this.updateAlbumForUser,
+      updateArtistForUser: this.updateArtistForUser
     }
     return (
       <AlbumContext.Provider value={contextValue}>

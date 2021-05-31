@@ -1,25 +1,27 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import AlbumForm from '../AlbumForm/AlbumForm';
 import config from '../config';
 import AlbumContext from '../AlbumContext';
 import PropTypes from 'prop-types';
 import './EditAlbum.css';
 
-class EditAlbum extends React.Component {
-    state = {
+function EditAlbum(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
         error: null,
         album_id: null,
         album_name: null,
         genre: null,
         artist: null,
         infoReady: false
-    }
+    };
 
-    static contextType = AlbumContext;
+    const [formData, setFormData] = useState({...initialState});
 
-    // get the current information for the album
-    componentDidMount() {
-        const { album_id } = this.props.match.params;
+    // get the information for the album
+    useEffect(() => {
+        const { album_id } = props.match.params;
 
         fetch(`${config.API_ENDPOINT}/albums/${album_id}`, {
             method: 'GET',
@@ -37,7 +39,7 @@ class EditAlbum extends React.Component {
                 return res.json();
             })
             .then(data => {
-                this.setState({
+                setFormData({
                     album_id: data.album_id,
                     album_name: data.album_name,
                     genre: data.genre,
@@ -47,12 +49,12 @@ class EditAlbum extends React.Component {
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setFormData({ error });
             });
-    }
+    }, []);
 
-    handleSubmit = (album) => {
-        this.setState({ error: null });
+    const handleSubmit = (album) => {
+        setFormData({ error: null });
         
         fetch(`${config.API_ENDPOINT}/albums/${album.album_id}`, {
             method: 'PATCH',
@@ -70,43 +72,41 @@ class EditAlbum extends React.Component {
                 }
             })
             .then(() => {
-                this.context.updateAlbum(album);
-                this.props.history.push(`/collection/${album.artist}`);
+                context.updateAlbum(album);
+                context.updateAlbumForUser(album);
+                props.history.push(`/collection/${album.artist}`);
             })
             .catch(error => {
                 console.error(error);
-                this.setState({ error });
+                setFormData({ error });
             });
     }
 
-    handleClickCancel = () => {
-        this.props.history.goBack();
+    const handleClickCancel = () => {
+        props.history.goBack();
     }
 
-    // renders the form with the correct values after the get request is done
-    renderForm = (album) => {
-        if (this.state.infoReady) {
+    const renderForm = (album) => {
+        if (formData.infoReady) {
             return (
                 <AlbumForm
-                    error={this.state.error}
-                    onSubmit={this.handleSubmit}
-                    onCancel={this.handleClickCancel}
+                    error={formData.error}
+                    onSubmit={handleSubmit}
+                    onCancel={handleClickCancel}
                     album={album}
                 />
             );
         }
     }
 
-    render() {
-        const { album_id, album_name, genre, artist } = this.state
-        const album = { album_id, album_name, genre, artist };
-        return (
-            <div className='edit-album'>
-                <h2>Edit Album</h2>
-                {this.renderForm(album)}
-            </div>
-        );
-    }
+    const { album_id, album_name, genre, artist } = formData
+    const album = { album_id, album_name, genre, artist };
+    return (
+        <div className='edit-album'>
+            <h2>Edit Album</h2>
+            {renderForm(album)}
+        </div>
+    );
 }
 
 EditAlbum.propTypes = {
