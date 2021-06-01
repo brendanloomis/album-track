@@ -1,36 +1,32 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import AlbumContext from '../AlbumContext';
 import ValidationError from '../ValidationError';
 import PropTypes from 'prop-types';
 import './SongForm.css';
 
-class SongForm extends React.Component {
-    state = {
-        song_id: this.props.song.song_id || undefined,
-        song_name: this.props.song.song_name || '',
-        album: this.props.song.album || this.props.album
+function SongForm(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
+        song_id: props.song.song_id || undefined,
+        song_name: props.song.song_name || '',
+        album: props.song.album || props.album
     };
 
-    static defaultProps = {
-        song: {}
-    };
+    const [formData, setFormData] = useState({ ...initialState });
 
-    static contextType = AlbumContext;
-
-    // functions to update state for form inputs
-    updateSongName(song_name) {
-        this.setState({ song_name });
+    const handleChange = ({ target }) => {
+        setFormData({
+            ...formData,
+            [target.name]: target.value
+        });
     }
 
-    updateAlbum(album) {
-        this.setState({ album });
-    }
-
-    handleSubmit = event => {
+    const handleSubmit = event => {
         event.preventDefault();
-        const { song_id, song_name, album } = this.state;
+        const { song_id, song_name, album } = formData;
 
-        this.props.onSubmit(
+        props.onSubmit(
             {
                 song_id,
                 song_name,
@@ -39,53 +35,57 @@ class SongForm extends React.Component {
         );
     }
 
-    render() {
-        const { song_id, song_name, album } = this.state;
-        const { error, onCancel } = this.props;
-        // create options for album input
-        const albumOptions = this.context.albumsForUser.map(album => {
-            return (
-                <option key={album.album} value={album.album}>
-                    {album.album_name}
-                </option>
-            );
-        });
+    const { song_id, song_name, album } = formData;
+    const { error, onCancel } = props;
+
+    // create options for album input
+    const albumOptions = context.albumsForUser.map(album => {
         return (
-            <form className='song-form' onSubmit={this.handleSubmit}>
-                {song_id && <input type='hidden' name='song_id' value={song_id} />}
-                <div>
-                    <label htmlFor='song-name'>Name</label>
-                    <input
-                        type='text'
-                        name='song-name'
-                        id='song-name'
-                        required
-                        value={song_name}
-                        onChange={e => this.updateSongName(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor='album'>Album</label>
-                    <select 
-                        name='album'
-                        id='album'
-                        required
-                        defaultValue={album}
-                        onChange={e => this.updateAlbum(e.target.value)}
-                    >
-                        {albumOptions}
-                    </select>
-                </div>
-                {error && <ValidationError message={error.message} />}
-                <div className='song-form-buttons'>
-                    <button type='submit'>Submit</button>
-                    {' '}
-                    <button onClick={onCancel}>Cancel</button>
-                </div>
-            </form>
+            <option key={album.album} value={album.album}>
+                {album.album_name}
+            </option>
         );
-    }
+    });
+
+    return (
+        <form className='song-form' onSubmit={handleSubmit}>
+            {song_id && <input type='hidden' name='song_id' value={song_id} />}
+            <div>
+                <label htmlFor='song-name'>Name</label>
+                <input
+                    type='text'
+                    name='song_name'
+                    id='song_name'
+                    required
+                    value={song_name}
+                    onChange={handleChange}
+                />
+            </div>
+            <div>
+                <label htmlFor='album'>Album</label>
+                <select 
+                    name='album'
+                    id='album'
+                    required
+                    defaultValue={album}
+                    onChange={handleChange}
+                >
+                    {albumOptions}
+                </select>
+            </div>
+            {error && <ValidationError message={error.message} />}
+            <div className='song-form-buttons'>
+                <button type='submit'>Submit</button>
+                {' '}
+                <button onClick={onCancel}>Cancel</button>
+            </div>
+        </form>
+    );
 }
+
+SongForm.defaultProps = {
+    song: {}
+};
 
 SongForm.propTypes = {
     song: PropTypes.shape({

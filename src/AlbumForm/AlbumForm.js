@@ -1,41 +1,33 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import AlbumContext from '../AlbumContext';
 import ValidationError from '../ValidationError';
 import PropTypes from 'prop-types';
 import './AlbumForm.css';
 
-class AlbumForm extends React.Component {
-    state = {
-        album_id: this.props.album.album_id || undefined,
-        album_name: this.props.album.album_name || '',
-        genre: this.props.album.genre || '',
-        artist: this.props.album.artist || this.props.artist
+function AlbumForm(props) {
+    const context = useContext(AlbumContext);
+
+    const initialState = {
+        album_id: props.album.album_id || undefined,
+        album_name: props.album.album_name || '',
+        genre: props.album.genre || '',
+        artist: props.album.artist || props.artist
     }
 
-    static defaultProps = {
-        album: {}
-    };
+    const [formData, setFormData] = useState({ ...initialState });
 
-    static contextType = AlbumContext;
-
-    // functions to update state for form inputs
-    updateAlbumName(album_name) {
-        this.setState({ album_name });
+    const handleChange = ({ target }) => {
+        setFormData({
+            ...formData,
+            [target.name]: target.value
+        });
     }
 
-    updateGenre(genre) {
-        this.setState({ genre });
-    }
-
-    updateArtist(artist) {
-        this.setState({ artist });
-    }
-
-    handleSubmit = event => {
+    const handleSubmit = event => {
         event.preventDefault();
-        const { album_id, album_name, genre, artist } = this.state;
+        const { album_id, album_name, genre, artist } = formData;
 
-        this.props.onSubmit(
+        props.onSubmit(
             {
                 album_id,
                 album_name,
@@ -45,64 +37,68 @@ class AlbumForm extends React.Component {
         );
     }
 
-    render() {
-        const { album_id, album_name, genre, artist } = this.state;
-        const { error, onCancel } = this.props;
-        // create options for the artist select input
-        const artistOptions = this.context.artistsForUser.map(artist => {
-            return (
-                <option key={artist.artist_id} value={artist.artist_id}>
-                    {artist.artist_name}
-                </option>
-            );
-        });
+    const { album_id, album_name, genre, artist } = formData;
+    const { error, onCancel } = props;
+
+    // create options for the artist select input
+    const artistOptions = context.artistsForUser.map(artist => {
         return (
-            <form className='album-form' onSubmit={this.handleSubmit}>
-                {album_id && <input type='hidden' name='album_id' value={album_id} />}
-                <div>
-                    <label htmlFor='album-name'>Name</label>
-                    <input
-                        type='text'
-                        name='album-name'
-                        id='album-name'
-                        required
-                        value={album_name}
-                        onChange={e => this.updateAlbumName(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor='genre'>Genre</label>
-                    <input 
-                        type='text'
-                        name='genre'
-                        id='genre'
-                        required
-                        value={genre}
-                        onChange={e => this.updateGenre(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor='artist'>Artist</label>
-                    <select 
-                        name='artist'
-                        id='artist'
-                        required
-                        defaultValue={artist}
-                        onChange={e => this.updateArtist(e.target.value)}
-                    >
-                        {artistOptions}
-                    </select>
-                </div>
-                {error && <ValidationError message={error.message} />}
-                <div className='album-form-buttons'>
-                    <button type='submit'>Submit</button>
-                    {' '}
-                    <button onClick={onCancel}>Cancel</button>
-                </div>
-            </form>
+            <option key={artist.artist_id} value={artist.artist_id}>
+                {artist.artist_name}
+            </option>
         );
-    }
+    });
+
+    return (
+        <form className='album-form' onSubmit={handleSubmit}>
+            {album_id && <input type='hidden' name='album_id' value={album_id} />}
+            <div>
+                <label htmlFor='album-name'>Name</label>
+                <input
+                    type='text'
+                    name='album_name'
+                    id='album_name'
+                    required
+                    value={album_name}
+                    onChange={handleChange}
+                />
+            </div>
+            <div>
+                <label htmlFor='genre'>Genre</label>
+                <input 
+                    type='text'
+                    name='genre'
+                    id='genre'
+                    required
+                    value={genre}
+                    onChange={handleChange}
+                />
+            </div>
+            <div>
+                <label htmlFor='artist'>Artist</label>
+                <select 
+                    name='artist'
+                    id='artist'
+                    required
+                    defaultValue={artist}
+                    onChange={handleChange}
+                >
+                    {artistOptions}
+                </select>
+            </div>
+            {error && <ValidationError message={error.message} />}
+            <div className='album-form-buttons'>
+                <button type='submit'>Submit</button>
+                {' '}
+                <button onClick={onCancel}>Cancel</button>
+            </div>
+        </form>
+    );
 }
+
+AlbumForm.defaultProps = {
+    album: {}
+};
 
 AlbumForm.propTypes = {
     album: PropTypes.shape({
