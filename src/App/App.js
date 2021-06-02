@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import Nav from '../Nav/Nav';
 import Landing from '../Landing/Landing';
@@ -17,8 +17,8 @@ import AddSong from '../AddSong/AddSong';
 import EditSong from '../EditSong/EditSong';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
-class App extends React.Component{
-  state = {
+function App() {
+  const initialState = {
     allAlbums: [],
     albumsForUser: [],
     artistsForUser: [],
@@ -30,8 +30,9 @@ class App extends React.Component{
     checkedIfLoggedIn: false
   };
 
-  // get artists, albums, songs, and usernames from server
-  componentDidMount() {
+  const [stateData, setStateData] = useState({ ...initialState });
+
+  useEffect(() => {
     Promise.all([
       fetch(`${config.API_ENDPOINT}/artists`, {
         method: 'GET',
@@ -86,7 +87,7 @@ class App extends React.Component{
         return Promise.all([artistsRes.json(), albumsRes.json(), songsRes.json(), usernameRes.json()]);
       })
       .then(([artists, allAlbums, songs, usernames]) => {
-        this.setState({ artists, allAlbums, songs, usernames });
+        setStateData(prevStateData => ({ ...prevStateData, artists, allAlbums, songs, usernames }));
       })
       .catch(err => {
         console.error({ err });
@@ -95,10 +96,11 @@ class App extends React.Component{
     // check if the user is logged in and get users albums and artists if they are
     const loggedInUser = JSON.parse(localStorage.getItem('user'));
     if (loggedInUser) {
-      this.loginUser(loggedInUser);
+      loginUser(loggedInUser);
+
       let userId = loggedInUser.user_id;
       if (!userId) {
-        userId = this.state.userInfo.user_id;
+        userId = stateData.userInfo.user_id;
       }
       Promise.all([
         fetch(`${config.API_ENDPOINT}/usersalbums?userId=${userId}`, {
@@ -130,22 +132,23 @@ class App extends React.Component{
             return Promise.all([usersAlbumsRes.json(), usersArtistsRes.json()]);
         })
         .then(([albumsForUser, artistsForUser]) => {
-            this.getAlbumsForUser(albumsForUser);
-            this.getArtistsForUser(artistsForUser);
+            getAlbumsForUser(albumsForUser);
+            getArtistsForUser(artistsForUser);
         })
         .catch(err => {
             console.error({ err });
         });
     }
-    this.setState({
+    setStateData(prevStateData => ({
+      ...prevStateData,
       checkedIfLoggedIn: true
-    });
-  }
+    }));
+  }, []);
 
-  renderRoutes() {
+  const renderRoutes = () => {
     // render routes after checking if user is logged in
     // redirect some paths to login page if the user needs to be logged in to access
-    if (this.state.checkedIfLoggedIn) {
+    if (stateData.checkedIfLoggedIn) {
       return (
         <>
           <ErrorBoundary>
@@ -158,7 +161,7 @@ class App extends React.Component{
               exact
               path='/collection'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <CollectionPage {...props} />
@@ -169,7 +172,7 @@ class App extends React.Component{
               exact
               path='/collection/:artistId'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <ArtistPage {...props} />
@@ -190,7 +193,7 @@ class App extends React.Component{
               exact
               path='/add-artist'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <AddArtist {...props} />
@@ -201,7 +204,7 @@ class App extends React.Component{
               exact
               path='/edit-artist/:artist_id'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <EditArtist {...props} />
@@ -212,7 +215,7 @@ class App extends React.Component{
               exact
               path='/add-album/:artist'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <AddAlbum {...props} />
@@ -223,7 +226,7 @@ class App extends React.Component{
               exact
               path='/edit-album/:album_id'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <EditAlbum {...props} />
@@ -234,7 +237,7 @@ class App extends React.Component{
               exact
               path='/add-song/:album'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <AddSong {...props} />
@@ -245,7 +248,7 @@ class App extends React.Component{
               exact
               path='/edit-song/:song_id'
               render={(props) => (
-                !this.state.loggedIn ? (
+                !stateData.loggedIn ? (
                   <Redirect to='/login' />
                 ) : (
                   <EditSong {...props} />
@@ -256,99 +259,112 @@ class App extends React.Component{
           </>
       )
     }
-  }
+  };
 
   // functions for updating state and context
-  loginUser = user => {
-    this.setState({
+  const loginUser = (user) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
       userInfo: user,
       loggedIn: true
-    });
+    }));
   }
 
-  logoutUser = () => {
-    this.setState({
+  const logoutUser = () => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
       userInfo: {},
       loggedIn: false,
       albumsForUser: [],
       artistsForUser: []
-    });
+    }));
   }
 
-  getAlbumsForUser = (albums) => {
-    this.setState({
+  const getAlbumsForUser = (albums) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
       albumsForUser: albums
-    });
+    }));
   }
 
-  getArtistsForUser = (artists) => {
-    this.setState({
+  const getArtistsForUser = (artists) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
       artistsForUser: artists
-    });
+    }));
   }
 
   // add functions
-  addArtist = (artist) => {
-    this.setState({
-      artists: [ ...this.state.artists, artist ]
-    });
+  const addArtist = (artist) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
+      artists: [ ...stateData.artists, artist ]
+    }));
   }
 
-  addAlbum = (album) => {
-    this.setState({
-      allAlbums: [ ...this.state.allAlbums, album ]
-    });
+  const addAlbum = (album) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
+      allAlbums: [ ...stateData.allAlbums, album ]
+    }));
   }
 
-  addSong = (song) => {
-    this.setState({
-      songs: [ ...this.state.songs, song ]
-    });
+  const addSong = (song) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
+      songs: [ ...stateData.songs, song ]
+    }));
   }
 
-  addArtistForUser = (artist) => {
-    this.setState({
-      artistsForUser: [ ...this.state.artistsForUser, artist ]
-    });
+  const addArtistForUser = (artist) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
+      artistsForUser: [ ...stateData.artistsForUser, artist ]
+    }));
   }
 
-  addAlbumForUser = (album) => {
-    this.setState({
-      albumsForUser: [ ...this.state.albumsForUser, album ]
-    });
+  const addAlbumForUser = (album) => {
+    setStateData(prevStateData => ({
+      ...prevStateData,
+      albumsForUser: [ ...stateData.albumsForUser, album ]
+    }));
   }
 
   // update functions
-  updateArtist = (updatedArtist) => {
-    this.setState({
-      artists: this.state.artists.map(a => 
+  const updateArtist = (updatedArtist) => {
+    setStateData( prevStateData => ({
+      ...prevStateData,
+      artists: stateData.artists.map(a => 
         (a.artist_id !== updatedArtist.artist_id) ? a : updatedArtist
       )
-    });
+    }));
   }
 
-  updateArtistForUser = (updatedArtist) => {
-    this.setState({
-      artistsForUser: this.state.artistsForUser.map(a =>
+  const updateArtistForUser = (updatedArtist) => {
+    setStateData( prevStateData => ({
+      ...prevStateData,
+      artistsForUser: stateData.artistsForUser.map(a =>
         (a.artist_id !== updatedArtist.artist_id) ? a : {
           ...a,
           ...updatedArtist
         }
       )
-    })
+    }))
   }
 
-  updateAlbum = (updatedAlbum) => {
-    this.setState({
-      allAlbums: this.state.allAlbums.map(a => 
+  const updateAlbum = (updatedAlbum) => {
+    setStateData( prevStateData => ({
+      ...prevStateData,
+      allAlbums: stateData.allAlbums.map(a => 
         (a.album_id !== updatedAlbum.album_id) ? a : updatedAlbum
       )
-    });
+    }));
   }
 
-  updateAlbumForUser = (updatedAlbum) => {
-    this.setState({
-      albumsForUser: this.state.albumsForUser.map(a => 
+  const updateAlbumForUser = (updatedAlbum) => {
+    setStateData( prevStateData => ({
+      ...prevStateData,
+      albumsForUser: stateData.albumsForUser.map(a => 
         (a.album !== updatedAlbum.album_id) ? a : {
           ...a,
           album: updatedAlbum.album_id,
@@ -357,95 +373,98 @@ class App extends React.Component{
           genre: updatedAlbum.genre
         }
       )
-    });
+    }));
   }
 
-  updateSong = (updatedSong) => {
-    this.setState({
-      songs: this.state.songs.map(s => 
+  const updateSong = (updatedSong) => {
+    setStateData( prevStateData => ({
+      ...prevStateData,
+      songs: stateData.songs.map(s => 
         (s.song_id !== updatedSong.song_id) ? s : {
           ...updatedSong,
           album: parseInt(updatedSong.album)
         }
       )
-    });
+    }));
   }
 
   // delete functions
-  deleteArtistForUser = (artistId) => {
-    const newArtistsForUser = this.state.artistsForUser.filter(a => (
+  const deleteArtistForUser = (artistId) => {
+    const newArtistsForUser = stateData.artistsForUser.filter(a => (
       a.artist_id !== artistId
     ));
-    this.setState({
+    setStateData( prevStateData => ({
+      ...prevStateData,
       artistsForUser: newArtistsForUser
-    });
+    }));
   }
 
-  deleteAlbumForUser = (albumId) => {
-    const newAlbumsForUser = this.state.albumsForUser.filter(a => (
+  const deleteAlbumForUser = (albumId) => {
+    const newAlbumsForUser = stateData.albumsForUser.filter(a => (
       a.album !== albumId
     ));
-    this.setState({
+    setStateData( prevStateData => ({
+      ...prevStateData,
       albumsForUser: newAlbumsForUser
-    });
+    }));
   }
 
-  deleteSong = (songId) => {
-    const newSongs = this.state.songs.filter(s => (
+  const deleteSong = (songId) => {
+    const newSongs = stateData.songs.filter(s => (
       s.song_id !== songId
     ));
-    this.setState({
+    setStateData( prevStateData => ({
+      ...prevStateData,
       songs: newSongs
-    });
+    }));
   }
 
-  render(){
-    const contextValue = {
-      artists: this.state.artists,
-      allAlbums: this.state.allAlbums,
-      albumsForUser: this.state.albumsForUser,
-      artistsForUser: this.state.artistsForUser,
-      songs: this.state.songs,
-      usernames: this.state.usernames,
-      loginUser: this.loginUser,
-      userInfo: this.state.userInfo,
-      loggedIn: this.state.loggedIn,
-      logoutUser: this.logoutUser,
-      getUserAlbums: this.getAlbumsForUser,
-      addArtist: this.addArtist,
-      getUserArtists: this.getArtistsForUser,
-      addArtistForUser: this.addArtistForUser,
-      updateArtist: this.updateArtist,
-      deleteArtist: this.deleteArtistForUser,
-      addAlbum: this.addAlbum,
-      addAlbumForUser: this.addAlbumForUser,
-      updateAlbum: this.updateAlbum,
-      deleteAlbum: this.deleteAlbumForUser,
-      addSong: this.addSong,
-      updateSong: this.updateSong,
-      deleteSong: this.deleteSong,
-      updateAlbumForUser: this.updateAlbumForUser,
-      updateArtistForUser: this.updateArtistForUser
-    }
-    return (
-      <AlbumContext.Provider value={contextValue}>
-        <div className='App'>
-          <header>
-            <h1>Album Track</h1>
-          </header>
-          <ErrorBoundary>
-            <Nav />
-          </ErrorBoundary>
-          <main className='main'>
-            {this.renderRoutes()}
-          </main>
-          <footer>
-            <p>© Brendan Loomis</p>
-          </footer>
-        </div>
-      </AlbumContext.Provider>
-    );
+  const contextValue = {
+    artists: stateData.artists,
+    allAlbums: stateData.allAlbums,
+    albumsForUser: stateData.albumsForUser,
+    artistsForUser: stateData.artistsForUser,
+    songs: stateData.songs,
+    usernames: stateData.usernames,
+    loginUser: loginUser,
+    userInfo: stateData.userInfo,
+    loggedIn: stateData.loggedIn,
+    logoutUser: logoutUser,
+    getUserAlbums: getAlbumsForUser,
+    addArtist: addArtist,
+    getUserArtists: getArtistsForUser,
+    addArtistForUser: addArtistForUser,
+    updateArtist: updateArtist,
+    deleteArtist: deleteArtistForUser,
+    addAlbum: addAlbum,
+    addAlbumForUser: addAlbumForUser,
+    updateAlbum: updateAlbum,
+    deleteAlbum: deleteAlbumForUser,
+    addSong: addSong,
+    updateSong: updateSong,
+    deleteSong: deleteSong,
+    updateAlbumForUser: updateAlbumForUser,
+    updateArtistForUser: updateArtistForUser
   }
+
+  return (
+    <AlbumContext.Provider value={contextValue}>
+      <div className='App'>
+        <header>
+          <h1>Album Track</h1>
+        </header>
+        <ErrorBoundary>
+          <Nav />
+        </ErrorBoundary>
+        <main className='main'>
+          {renderRoutes()}
+        </main>
+        <footer>
+          <p>© Brendan Loomis</p>
+        </footer>
+      </div>
+    </AlbumContext.Provider>
+  );
 }
 
 export default App;
